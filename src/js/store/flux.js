@@ -1,45 +1,54 @@
 const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+  return {
+    store: {
+      characters: [],
+      locations: [],
+      episodes: [],
+      favorites: [],
+    },
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+    actions: {
+      getCharacters: async () => {
+        const response = await fetch(
+          "https://rickandmortyapi.com/api/character"
+        );
+        const data = await response.json();
+        setStore({ characters: data.results });
+      },
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+      getLocations: async () => {
+        const response = await fetch(
+          "https://rickandmortyapi.com/api/location"
+        );
+        const data = await response.json();
+        setStore({ locations: data.results });
+      },
+
+      getEpisodes: async () => {
+        const response = await fetch("https://rickandmortyapi.com/api/episode");
+        const data = await response.json();
+        setStore({ episodes: data.results });
+      },
+      handleFavorites: (item) => {
+        const store = getStore();
+        if (!store.favorites.includes(item)) {
+          setStore({ favorites: [...store.favorites, item] });
+        } else {
+          setStore({
+            favorites: store.favorites.filter((favName) => favName != item),
+          });
+        }
+      },
+
+      handleDeleteFavorites: (item) => {
+        const store = getStore();
+        const newList = store.favorites.filter(
+          (deleteFav) => deleteFav !== item
+        );
+        setStore({ favorites: newList });
+      },
+    },
+  };
 };
 
 export default getState;

@@ -1,3 +1,15 @@
-/* 
-    General Styles
-*/
+
+
+element
+
+nav {
+    background-color: yellowgreen;
+}
+button {
+    color: yellow;
+    background-color: yellowgreen;
+}
+
+footer {
+    background-color: yellowgreen;
+}
